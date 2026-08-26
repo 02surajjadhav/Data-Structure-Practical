@@ -1,71 +1,80 @@
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
+#include <string>
+using namespace std;
 #define MAX 10
-char stack[MAX][50];
+string stack[MAX];
 int top = -1;
-void push(char page[])
+void push(string page)
 {
     if (top == MAX - 1)
-        printf("History Full!\n");
+    {
+        cout << "History Full!" << endl;
+    }
     else
     {
         top++;
-        strcpy(stack[top], page);
-        printf("Visited: %s\n", page);
+        stack[top] = page;
+        cout << "Visited: " << page << endl;
     }
 }
 void pop()
 {
     if (top == -1)
-        printf("No previous page!\n");
+    {
+        cout << "No previous page!" << endl;
+    }
     else
     {
-        printf("Back from: %s\n", stack[top]);
+        cout << "Back from: " << stack[top] << endl;
         top--;
-        
         if (top >= 0)
-            printf("Current page: %s\n", stack[top]);
+            cout << "Current page: " << stack[top] << endl;
     }
 }
 void peek()
 {
     if (top == -1)
-        printf("History Empty!\n");
+    {
+        cout << "History Empty!" << endl;
+    }
     else
-        printf("Current page: %s\n", stack[top]);
+    {
+        cout << "Current page: " << stack[top] << endl;
+    }
 }
 void display()
 {
-    int i;
-
     if (top == -1)
-        printf("History Empty!\n");
+    {
+        cout << "History Empty!" << endl;
+    }
     else
     {
-        printf("Browser History:\n");
-
-        for (i = top; i >= 0; i--)
-            printf("%s\n", stack[i]);
+        cout << "Browser History:" << endl;
+        for (int i = top; i >= 0; i--)
+        {
+            cout << stack[i] << endl;
+        }
     }
 }
 int main()
 {
     int choice;
-    char page[50];
+    string page;
     do
     {
-        printf("\n1. Visit Page");
-        printf("\n2. Back");
-        printf("\n3. Current Page");
-        printf("\n4. Display History");
-        printf("\n5. Exit");
-        printf("\nEnter choice: ");
-        scanf("%d", &choice);
-        switch(choice)
+        cout << "\n1. Visit Page";
+        cout << "\n2. Back";
+        cout << "\n3. Current Page";
+        cout << "\n4. Display History";
+        cout << "\n5. Exit";
+        cout << "\nEnter choice: ";
+        cin >> choice;
+        switch (choice)
         {
             case 1:
-                printf("Enter webpage: ");
-                scanf("%s", page);
+                cout << "Enter webpage: ";
+                cin >> page;
                 push(page);
                 break;
             case 2:
@@ -78,11 +87,11 @@ int main()
                 display();
                 break;
             case 5:
-                printf("Exit");
+                cout << "Exit" << endl;
                 break;
             default:
-                printf("Invalid choice!");
+                cout << "Invalid choice!" << endl;
         }
-    } while(choice != 5);
+    } while (choice != 5);
     return 0;
 }
