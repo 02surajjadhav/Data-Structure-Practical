@@ -1,229 +1,195 @@
 #include <iostream>
 #include <string>
-#include <limits>
 using namespace std;
-#define MAX 100
-string arrayQueue[MAX];
-int frontA = -1;
-int rearA = -1;
-int countA = 0;
-void enqueueArray()
-{
-    if (countA == MAX)
-    {
-        cout << "\nQueue Overflow! Array queue is full.\n";
-        return;
-    }
-    string request;
-    cout << "Enter ticket reservation request: ";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    getline(cin, request);
-    if (countA == 0)
-    {
-        frontA = 0;
-        rearA = 0;
-    }
-    else
-    {
-        rearA = (rearA + 1) % MAX;
-    }
-    arrayQueue[rearA] = request;
-    countA++;
-    cout << "Request added successfully.\n";
-}
-void dequeueArray()
-{
-    if (countA == 0)
-    {
-        cout << "\nQueue Underflow! No requests to process.\n";
-        return;
-    }
-    cout << "\nProcessed Request: "
-         << arrayQueue[frontA] << endl;
-    frontA = (frontA + 1) % MAX;
-    countA--;
-    if (countA == 0)
-    {
-        frontA = -1;
-        rearA = -1;
-    }
-}
-void displayArray()
-{
-    if (countA == 0)
-    {
-        cout << "\nQueue is empty.\n";
-        return;
-    }
-    cout << "\nTicket Reservation Requests (Array Queue):\n";
-    int index = frontA;
-    for (int i = 0; i < countA; i++)
-    {
-        cout << i + 1 << ". "
-             << arrayQueue[index] << endl;
 
-        index = (index + 1) % MAX;
+#define MAX 100
+
+// Queue using Array
+class ArrayQueue {
+    string q[MAX];
+    int front, rear;
+
+public:
+    ArrayQueue() {
+        front = rear = -1;
     }
-}
-struct Node
-{
+
+    void enqueue(string request) {
+        if (rear == MAX - 1) {
+            cout << "Queue Overflow!\n";
+            return;
+        }
+
+        if (front == -1)
+            front = 0;
+
+        q[++rear] = request;
+        cout << "Reservation added successfully.\n";
+    }
+
+    void dequeue() {
+        if (front == -1 || front > rear) {
+            cout << "Queue Underflow!\n";
+            return;
+        }
+
+        cout << "Processed Request: " << q[front++] << endl;
+
+        if (front > rear)
+            front = rear = -1;
+    }
+
+    void display() {
+        if (front == -1) {
+            cout << "Queue is empty.\n";
+            return;
+        }
+
+        cout << "Pending Reservations:\n";
+        for (int i = front; i <= rear; i++)
+            cout << q[i] << endl;
+    }
+};
+
+// Queue using Linked List
+struct Node {
     string request;
     Node* next;
+
+    Node(string r) {
+        request = r;
+        next = nullptr;
+    }
 };
-Node* frontL = NULL;
-Node* rearL = NULL;
-void enqueueLinkedList()
-{
-    string request;
-    cout << "Enter ticket reservation request: ";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    getline(cin, request);
-    Node* newNode = new Node;
-    newNode->request = request;
-    newNode->next = NULL;
-    if (rearL == NULL)
-    {
-        frontL = newNode;
-        rearL = newNode;
+
+class LinkedQueue {
+    Node *front, *rear;
+
+public:
+    LinkedQueue() {
+        front = rear = nullptr;
     }
-    else
-    {
-        rearL->next = newNode;
-        rearL = newNode;
+
+    void enqueue(string request) {
+        Node* newNode = new Node(request);
+
+        if (rear == nullptr)
+            front = rear = newNode;
+        else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+
+        cout << "Reservation added successfully.\n";
     }
-    cout << "Request added successfully.\n";
-}
-void dequeueLinkedList()
-{
-    if (frontL == NULL)
-    {
-        cout << "\nQueue Underflow! No requests to process.\n";
-        return;
-    }
-    Node* temp = frontL
-    cout << "\nProcessed Request: "
-         << temp->request << endl;
-    frontL = frontL->next;
-    if (frontL == NULL)
-    {
-        rearL = NULL;
-    }
-    delete temp;
-}
-void displayLinkedList()
-{
-    if (frontL == NULL)
-    {
-        cout << "\nQueue is empty.\n";
-        return;
-    }
-    cout << "\nTicket Reservation Requests (Linked List Queue):\n";
-    Node* temp = frontL;
-    int i = 1;
-    while (temp != NULL)
-    {
-        cout << i << ". "
+
+    void dequeue() {
+        if (front == nullptr) {
+            cout << "Queue Underflow!\n";
+            return;
+        }
+
+        Node* temp = front;
+        cout << "Processed Request: "
              << temp->request << endl;
-        temp = temp->next;
-        i++;
+
+        front = front->next;
+
+        if (front == nullptr)
+            rear = nullptr;
+
+        delete temp;
     }
-}
-int main()
-{
-    int choice;
-    int operation;
-    while (true)
-    {
-        cout << "\n===============================================\n";
-        cout << "       TICKET RESERVATION QUEUE SYSTEM\n";
-        cout << "===============================================\n";
+
+    void display() {
+        if (front == nullptr) {
+            cout << "Queue is empty.\n";
+            return;
+        }
+
+        cout << "Pending Reservations:\n";
+
+        Node* temp = front;
+        while (temp != nullptr) {
+            cout << temp->request << endl;
+            temp = temp->next;
+        }
+    }
+
+    ~LinkedQueue() {
+        while (front != nullptr) {
+            Node* temp = front;
+            front = front->next;
+            delete temp;
+        }
+    }
+};
+
+int main() {
+    ArrayQueue aq;
+    LinkedQueue lq;
+    int choice, type;
+    string request;
+
+    do {
+        cout << "\n--- Ticket Reservation System ---\n";
         cout << "1. Queue Using Array\n";
         cout << "2. Queue Using Linked List\n";
         cout << "3. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
-        if (cin.fail())
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-            cout << "\nInvalid input! Please enter a number.\n";
-            continue;
-        }
-        if (choice == 3)
-        {
-            cout << "\nProgram terminated.\n";
-            break;
-        }
-        if (choice != 1 && choice != 2)
-        {
-            cout << "\nInvalid choice! Try again.\n";
-            continue;
-        }
-        while (true)
-        {
-            cout << "\n-----------------------------------------------\n";
-            cout << "              QUEUE OPERATIONS\n";
-            cout << "-----------------------------------------------\n";
-            cout << "1. Enqueue Request\n";
-            cout << "2. Dequeue Request\n";
-            cout << "3. Display Requests\n";
-            cout << "4. Back to Main Menu\n";
-            cout << "Enter your choice: ";
-            cin >> operation;
-            if (cin.fail())
-            {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "\nInvalid input! Please enter a number.\n";
-                continue;
-            }
-            if (operation == 4)
-            {
-                break;
-            }
-            if (choice == 1)
-            {
-                switch (operation)
-                {
+        if (choice == 1 || choice == 2) {
+            do {
+                cout << "\n1. Enqueue Reservation\n";
+                cout << "2. Dequeue Reservation\n";
+                cout << "3. Display Reservations\n";
+                cout << "4. Back to Main Menu\n";
+                cout << "Enter your choice: ";
+                cin >> type;
+                cin.ignore(10000, '\n');
+
+                switch (type) {
                     case 1:
-                        enqueueArray();
+                        cout << "Enter reservation details: ";
+                        getline(cin, request);
+
+                        if (choice == 1)
+                            aq.enqueue(request);
+                        else
+                            lq.enqueue(request);
                         break;
+
                     case 2:
-                        dequeueArray();
+                        if (choice == 1)
+                            aq.dequeue();
+                        else
+                            lq.dequeue();
                         break;
+
                     case 3:
-                        displayArray();
+                        if (choice == 1)
+                            aq.display();
+                        else
+                            lq.display();
                         break;
+
+                    case 4:
+                        break;
+
                     default:
-                        cout << "\nInvalid operation!\n";
+                        cout << "Invalid choice!\n";
                 }
-            }
-            else
-            {
-                switch (operation)
-                {
-                    case 1:
-                        enqueueLinkedList();
-                        break;
-                    case 2:
-                        dequeueLinkedList();
-                        break;
-                    case 3:
-                        displayLinkedList();
-                        break;
-                    default:
-                        cout << "\nInvalid operation!\n";
-                }
-            }
+            } while (type != 4);
         }
-    }
-    while (frontL != NULL)
-    {
-        Node* temp = frontL;
-        frontL = frontL->next;
-        delete temp;
-    }
-    rearL = NULL;
+        else if (choice == 3) {
+            cout << "Exiting program.\n";
+        }
+        else {
+            cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 3);
+
     return 0;
 }
