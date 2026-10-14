@@ -4,7 +4,7 @@ using namespace std;
 
 #define MAX 100
 
-// Queue using Array
+// Queue Using Array
 class ArrayQueue {
     string q[MAX];
     int front, rear;
@@ -33,7 +33,8 @@ public:
             return;
         }
 
-        cout << "Processed Request: " << q[front++] << endl;
+        cout << "Processed Request: "
+             << q[front++] << endl;
 
         if (front > rear)
             front = rear = -1;
@@ -51,14 +52,14 @@ public:
     }
 };
 
-// Queue using Linked List
+// Queue Using Linked List
 struct Node {
     string request;
     Node* next;
 
     Node(string r) {
         request = r;
-        next = nullptr;
+        next = NULL;
     }
 };
 
@@ -67,15 +68,15 @@ class LinkedQueue {
 
 public:
     LinkedQueue() {
-        front = rear = nullptr;
+        front = rear = NULL;
     }
 
     void enqueue(string request) {
         Node* newNode = new Node(request);
 
-        if (rear == nullptr)
+        if (rear == NULL) {
             front = rear = newNode;
-        else {
+        } else {
             rear->next = newNode;
             rear = newNode;
         }
@@ -84,40 +85,41 @@ public:
     }
 
     void dequeue() {
-        if (front == nullptr) {
+        if (front == NULL) {
             cout << "Queue Underflow!\n";
             return;
         }
 
         Node* temp = front;
+
         cout << "Processed Request: "
              << temp->request << endl;
 
         front = front->next;
 
-        if (front == nullptr)
-            rear = nullptr;
+        if (front == NULL)
+            rear = NULL;
 
         delete temp;
     }
 
     void display() {
-        if (front == nullptr) {
+        if (front == NULL) {
             cout << "Queue is empty.\n";
             return;
         }
 
         cout << "Pending Reservations:\n";
-
         Node* temp = front;
-        while (temp != nullptr) {
+
+        while (temp != NULL) {
             cout << temp->request << endl;
             temp = temp->next;
         }
     }
 
     ~LinkedQueue() {
-        while (front != nullptr) {
+        while (front != NULL) {
             Node* temp = front;
             front = front->next;
             delete temp;
@@ -128,6 +130,7 @@ public:
 int main() {
     ArrayQueue aq;
     LinkedQueue lq;
+
     int choice, type;
     string request;
 
@@ -180,6 +183,7 @@ int main() {
                     default:
                         cout << "Invalid choice!\n";
                 }
+
             } while (type != 4);
         }
         else if (choice == 3) {
